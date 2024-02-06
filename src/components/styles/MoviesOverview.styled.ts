@@ -147,7 +147,7 @@ export const StyledMovieOverview = styled.div`
 
   div {
     max-height: 150px;
-    overflow-y: scroll;
+    overflow-y: auto;
     ::-webkit-scrollbar {
       width: 12px;
     }

@@ -80,7 +80,7 @@ export const StyledMovieOverview = styled.div`
     transition: all .3s;
     width: 100%;
     &:hover {
-      background: rgb(12, 185, 78);
+      background: #8b0b3a;
     }
   }
 
