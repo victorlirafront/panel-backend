@@ -49,20 +49,24 @@ const Home = (props: IHome) => {
   );
 };
 
-export async function getStaticProps() {
-  let response = await axios({
-    url: FEATURED_API,
-    method: 'GET',
-  });
+export async function getServerSideProps() {
+  try {
+    const response = await axios.get(FEATURED_API);
+    const movies = response.data.results;
 
-  let data = await response.data;
-
-  return {
-    props: {
-      movies: data.results,
-    },
-    revalidate: 60,
-  };
+    return {
+      props: {
+        movies,
+      },
+    };
+  } catch (error) {
+    console.error('Erro ao obter dados da API:', error);
+    return {
+      props: {
+        movies: [],
+      },
+    };
+  }
 }
 
 export default Home;

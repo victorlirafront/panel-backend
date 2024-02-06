@@ -1,10 +1,12 @@
-import Axios from 'axios';
-import MovieOverview from '../../src/components/MovieOverview';
-import { FEATURED_API } from '../../src/services/api/movieApi';
-import Head from 'next/head';
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { GetStaticProps, GetStaticPaths, GetStaticPropsContext } from 'next';
+import Axios from "axios";
+import MovieOverview from "../../src/components/MovieOverview";
+import { FEATURED_API } from "../../src/services/api/movieApi";
+import Head from "next/head";
+import React from "react";
+import { useRouter } from "next/router";
+import {
+  GetServerSideProps,
+} from "next";
 
 interface IMovieOriginalResponse {
   vote_average: string;
@@ -38,7 +40,7 @@ function MovieDetails(props: IProps) {
   const router = useRouter();
 
   const backToRoute = function () {
-    router.replace('/');
+    router.replace("/");
   };
 
   return (
@@ -56,43 +58,58 @@ function MovieDetails(props: IProps) {
         trailer={
           movieDetail.videos.results.length > 0
             ? movieDetail.videos.results[0].key
-            : '/GgZpCtBXw'
+            : "/GgZpCtBXw"
         }
       />
     </React.Fragment>
   );
 }
 
-export const getStaticProps: GetStaticProps = async (
-  context: GetStaticPropsContext
-) => {
-  const { movieId } = context.params!;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { params } = context;
+  const { movieId } = params!;
 
-  let response = await Axios({
-    url: `https://api.themoviedb.org/3/movie/${movieId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`,
-    method: 'GET',
-  });
+  try {
+    const response = await Axios.get(
+      `https://api.themoviedb.org/3/movie/${movieId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`
+    );
 
-  return {
-    props: {
-      movieDetail: response.data,
-    },
-    revalidate: 50,
-  };
+    return {
+      props: {
+        movieDetail: response.data,
+      },
+    };
+  } catch (error) {
+    console.error("Erro ao obter detalhes do filme:", error);
+
+    return {
+      props: {
+        movieDetail: null,
+      },
+    };
+  }
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  let response = await Axios({
-    url: FEATURED_API,
-    method: 'GET',
-  });
+export const getServerSidePaths: any = async () => {
+  try {
+    const response = await Axios.get(FEATURED_API);
 
-  return {
-    fallback: false,
-    paths: response.data.results.map((movie: IMovieOriginalResponse) => ({
+    const paths = response.data.results.map((movie: any) => ({
       params: { movieId: movie.id.toString() },
-    })),
-  };
+    }));
+
+    return {
+      paths,
+      fallback: false,
+    };
+  } catch (error) {
+    console.error("Erro ao obter dados da API:", error);
+
+    return {
+      paths: [],
+      fallback: false,
+    };
+  }
 };
 
 export default MovieDetails;
