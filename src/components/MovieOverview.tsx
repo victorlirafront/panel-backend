@@ -8,6 +8,7 @@ import { RiCloseFill } from 'react-icons/ri';
 import PopUp from './ui/PopUp';
 import { BiPlay } from 'react-icons/bi';
 import { CgArrowsExpandRight } from 'react-icons/cg';
+import Image from 'next/image';
 import {
   StyledDetailInformations,
   StyledMovieDetailsContainer,
@@ -88,12 +89,20 @@ function MovieOverview(props: IProps) {
         <StyledPopUp>
           <PopUp className="popup" onCloseModel={hidePopUp}>
             <RiCloseFill onClick={() => hidePopUp()} />
-            <img src={IMAGE_API + movieDetail!.poster_path} alt="poster path" />
+            <Image
+              width={1080}
+              height={1080}
+              src={IMAGE_API + movieDetail!.poster_path}
+              alt="poster path"
+            />
           </PopUp>
         </StyledPopUp>
       )}
       <StyledMovieBanner>
-        <img
+        <Image
+          width={1080}
+          height={608}
+          alt="teste"
           className="backdrop_image"
           src={
             movieDetail!.backdrop_path
@@ -112,7 +121,12 @@ function MovieOverview(props: IProps) {
             onMouseEnter={() => setPostHoverEffect(true)}
             onMouseDown={() => setPostHoverEffect(true)}
           >
-            <img src={IMAGE_API + movieDetail!.poster_path} />
+            <Image
+              width={350}
+              height={500}
+              alt="teste"
+              src={IMAGE_API + movieDetail!.poster_path}
+            />
             <div className="overlay" />
             {posterHoverEffect && (
               <div className="content" onClick={() => displayPopUpHandler()}>
@@ -159,7 +173,9 @@ function MovieOverview(props: IProps) {
                   movieDetail.production_companies.map(
                     logo =>
                       logo.logo_path && (
-                        <img
+                        <Image
+                          width={100}
+                          height={40}
                           alt="something"
                           key={logo.id}
                           className="production"

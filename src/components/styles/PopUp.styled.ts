@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 //pop up
 export const StyledBackdrop = styled.div`
