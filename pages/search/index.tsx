@@ -9,7 +9,7 @@ import Head from 'next/head';
 import { getVoteAverage } from '../../src/helper/functions';
 import useAxios from '../../src/hooks/useAxios';
 import LoadingSpinner from '../../src/components/ui/LoadingSpinner';
-import NoMovieFound from '../../src/components/ui/NoMovieFound'
+import NoMovieFound from '../../src/components/ui/NoMovieFound';
 
 interface IsearchedMovie {
   image: string;
@@ -22,6 +22,12 @@ interface IsearchedMovie {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
+interface IApiResponse {
+  data: {
+    results: [];
+  };
+}
+
 function Search() {
   const router = useRouter();
   const [allData, setAllData] = useState<IsearchedMovie[]>([]);
@@ -32,13 +38,13 @@ function Search() {
   useEffect(() => {
     setIsLoading(true);
     const current = localStorage.getItem('search');
-    async function getData(response: any) {
+    async function getData(response: IApiResponse) {
       const data = response.data.results;
       setAllData(data);
       setIsLoading(false);
     }
     sendRequest({ url: SEARCH_API + current }, getData);
-  }, [searchMovieValue]);
+  }, [searchMovieValue, sendRequest]);
 
   function showMovieDetail(e: React.MouseEvent<HTMLButtonElement>) {
     const route = e.currentTarget
@@ -59,7 +65,7 @@ function Search() {
             content="take a look at the most popular movies nowadays"
           />
         </Head>
-        {!isLoading && allData.length <= 0 && <NoMovieFound/>}
+        {!isLoading && allData.length <= 0 && <NoMovieFound />}
         {isLoading && <LoadingSpinner />}
         {!isLoading &&
           allData.map((movie: IsearchedMovie) => {
