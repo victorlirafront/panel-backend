@@ -10,6 +10,7 @@
   "dependencies": {
     "aos": "^2.3.4",
     "axios": "^0.26.0",
+    "caniuse-lite": "^1.0.30001596",
     "framer-motion": "4",
     "next": "12.0.10",
     "react": "17.0.2",

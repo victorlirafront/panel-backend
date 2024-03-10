@@ -1,43 +1,41 @@
 import { StyledHeader, StyledInput } from '../styles/Header.styled';
-import React, { useState } from 'react';
-import { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { SearchPageContext } from '../../context/searchMovieinput';
 import { useRouter } from 'next/router';
 
 function Header() {
-  const { searchMovieFunction } = useContext(SearchPageContext);
+  const { setSearchMovie } = useContext(SearchPageContext);
   const [searchValue, setSearchValue] = useState('');
   const router = useRouter();
 
-  const searchMovie = function (e: React.FormEvent<HTMLInputElement>) {
-    e.preventDefault();
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.currentTarget.value);
   };
 
-  const onFormSubmit = async function (e: React.FormEvent) {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem('search', searchValue);
-    const current = localStorage.getItem('search')!;
+    const currentSearch = localStorage.getItem('search') || ''; // Corrigido para tratar null ou undefined
     router.replace('/search');
-    searchMovieFunction(current);
+    setSearchMovie(currentSearch);
     setSearchValue('');
   };
 
-  const goBackToHomePage = function () {
+  const goBackToHomePage = () => {
     router.push('/');
   };
 
   return (
     <StyledHeader>
-      <h1 onClick={() => goBackToHomePage()}>
+      <h1 onClick={goBackToHomePage}>
         <span>i</span> Movies
       </h1>
-      <form onSubmit={onFormSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <StyledInput
           type="search"
           placeholder="Search"
           value={searchValue}
-          onChange={e => searchMovie(e)}
+          onChange={handleSearchChange}
         />
       </form>
     </StyledHeader>
