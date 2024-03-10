@@ -21,9 +21,13 @@ interface IMovieDetails {
   videos: { results: { key: string }[] };
 }
 
+interface IApiResponse {
+  data: IMovieDetails;
+}
+
 function Search() {
   const [currentMovie, setCurrentMovie] = useState<IMovieDetails>(
-    {} as IMovieDetails
+    {} as IMovieDetails,
   );
   const router = useRouter();
   const { sendRequest } = useAxios();
@@ -34,7 +38,7 @@ function Search() {
 
   useEffect(() => {
     const currentId = localStorage.getItem('movie-id');
-    const fetchData = function (response: any) {
+    const fetchData = function (response: IApiResponse) {
       const data = response.data;
       setCurrentMovie(data);
     };
@@ -42,7 +46,7 @@ function Search() {
       {
         url: `https://api.themoviedb.org/3/movie/${currentId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`,
       },
-      fetchData
+      fetchData,
     );
   }, []);
 
