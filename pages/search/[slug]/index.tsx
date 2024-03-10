@@ -4,7 +4,6 @@ import MovieOverview from '../../../src/components/MovieOverview';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { StyledSearchPage } from '../../../src/components/styles/StyledSearchPage.styled';
-import useAxios from '../../../src/hooks/useAxios';
 
 interface IMovieDetails {
   backdrop_path: string;
@@ -21,16 +20,11 @@ interface IMovieDetails {
   videos: { results: { key: string }[] };
 }
 
-interface IApiResponse {
-  data: IMovieDetails;
-}
-
 function Search() {
   const [currentMovie, setCurrentMovie] = useState<IMovieDetails>(
     {} as IMovieDetails,
   );
   const router = useRouter();
-  const { sendRequest } = useAxios();
 
   const goBackToRoute = function () {
     router.replace('/search');
@@ -38,15 +32,14 @@ function Search() {
 
   useEffect(() => {
     const currentId = localStorage.getItem('movie-id');
-    const fetchData = function (response: IApiResponse) {
-      const data = response.data;
+    const fetchData = async function (response: string) {
+      const newResponse = await fetch(response);
+      const data = await newResponse.json();
       setCurrentMovie(data);
     };
-    sendRequest(
-      {
-        url: `https://api.themoviedb.org/3/movie/${currentId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`,
-      },
-      fetchData,
+
+    fetchData(
+      `https://api.themoviedb.org/3/movie/${currentId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`,
     );
   }, []);
 

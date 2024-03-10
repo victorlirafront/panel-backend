@@ -1,17 +1,17 @@
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 import MoviesWrapper from '../../src/components/MoviesWrapper';
 import MovieItem from '../../src/components/MovieItem';
 import { IMAGE_API, SEARCH_API } from '../../src/services/api/movieApi';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { SearchPageContext } from '../../src/context/searchMovieinput';
 import SearchPageProvider from '../../src/context/searchMovieinput';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { getVoteAverage } from '../../src/helper/functions';
-import useAxios from '../../src/hooks/useAxios';
 import LoadingSpinner from '../../src/components/ui/LoadingSpinner';
 import NoMovieFound from '../../src/components/ui/NoMovieFound';
 
-interface IsearchedMovie {
+interface ISearchedMovie {
   image: string;
   title: string;
   vote: number;
@@ -24,36 +24,43 @@ interface IsearchedMovie {
 
 interface IApiResponse {
   data: {
-    results: [];
+    results: ISearchedMovie[];
   };
 }
 
 function Search() {
   const router = useRouter();
-  const [allData, setAllData] = useState<IsearchedMovie[]>([]);
   const { searchMovieValue } = useContext(SearchPageContext);
+  const [allData, setAllData] = useState<ISearchedMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { sendRequest } = useAxios();
 
   useEffect(() => {
     setIsLoading(true);
     const current = localStorage.getItem('search');
-    async function getData(response: IApiResponse) {
-      const data = response.data.results;
-      setAllData(data);
-      setIsLoading(false);
-    }
-    sendRequest({ url: SEARCH_API + current }, getData);
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(SEARCH_API + current);
+        const data: IApiResponse = await response.json();
+
+        console.log(data)
+        
+        setAllData(data.data.results);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, [searchMovieValue]);
 
-  function showMovieDetail(e: React.MouseEvent<HTMLButtonElement>) {
-    const route = e.currentTarget
-      .closest('.get-id')!
-      .getAttribute('data-identifier')!;
-
+  const showMovieDetail = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const route = e.currentTarget.closest('.get-id')!.getAttribute('data-identifier')!;
     localStorage.setItem('movie-id', route);
     router.replace('search/' + route);
-  }
+  };
 
   return (
     <SearchPageProvider>
@@ -62,25 +69,23 @@ function Search() {
           <title>Movie app</title>
           <meta
             name="description"
-            content="take a look at the most popular movies nowadays"
+            content="Take a look at the most popular movies nowadays"
           />
         </Head>
-        {!isLoading && allData.length <= 0 && <NoMovieFound />}
+        {!isLoading && allData.length === 0 && <NoMovieFound />}
         {isLoading && <LoadingSpinner />}
         {!isLoading &&
-          allData.map((movie: IsearchedMovie) => {
-            return (
-              <MovieItem
-                onClick={e => showMovieDetail(e)}
-                id={movie.id}
-                key={movie.id}
-                average={getVoteAverage(movie.vote_average)}
-                title={movie.title}
-                vote={movie.vote_average}
-                image={movie.poster_path && IMAGE_API + movie.poster_path}
-              />
-            );
-          })}
+          allData.map((movie: ISearchedMovie) => (
+            <MovieItem
+              onClick={(e) => showMovieDetail(e)}
+              id={movie.id}
+              key={movie.id}
+              average={getVoteAverage(movie.vote_average)}
+              title={movie.title}
+              vote={movie.vote_average}
+              image={movie.poster_path && IMAGE_API + movie.poster_path}
+            />
+          ))}
       </MoviesWrapper>
     </SearchPageProvider>
   );
