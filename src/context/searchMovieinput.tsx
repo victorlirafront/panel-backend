@@ -1,28 +1,33 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, createContext } from 'react';
 
-interface Iprops {
+interface Props {
   children: ReactNode;
 }
 
-export const SearchPageContext = React.createContext({
+interface SearchContextType {
+  searchMovieValue: string;
+  setSearchMovie: (arg: string) => void;
+}
+
+export const SearchPageContext = createContext<SearchContextType>({
   searchMovieValue: '',
-  searchMovieFunction: (arg: string) => {},
+  setSearchMovie: () => {},
 });
 
-export const SearchPageProvider = function (props: Iprops) {
-  const [searchMovie, setSearchMovie] = useState('');
+export const SearchPageProvider = (props: Props) => {
+  const [searchMovie, setSearchMovie] = useState<string>('');
 
-  const seachMovie = function (inputValue: string) {
+  const handleSearchMovie = (inputValue: string) => {
     setSearchMovie(inputValue);
   };
 
-  const values = {
-    searchMovieFunction: seachMovie,
+  const contextValues: SearchContextType = {
     searchMovieValue: searchMovie,
+    setSearchMovie: handleSearchMovie,
   };
 
   return (
-    <SearchPageContext.Provider value={values}>
+    <SearchPageContext.Provider value={contextValues}>
       {props.children}
     </SearchPageContext.Provider>
   );

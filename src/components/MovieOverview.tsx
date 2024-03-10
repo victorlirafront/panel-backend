@@ -4,11 +4,11 @@ import { currencyFormatting } from '../helper/functions';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 import React, { useEffect, useState } from 'react';
-// import { useRouter } from "next/router";
 import { RiCloseFill } from 'react-icons/ri';
 import PopUp from './ui/PopUp';
 import { BiPlay } from 'react-icons/bi';
 import { CgArrowsExpandRight } from 'react-icons/cg';
+import Image from 'next/image';
 import {
   StyledDetailInformations,
   StyledMovieDetailsContainer,
@@ -166,7 +166,7 @@ function MovieOverview(props: IProps) {
                           className="production"
                           src={IMAGE_API + logo.logo_path}
                         />
-                      )
+                      ),
                   )}
               </div>
             </StyledMovieOverview>
@@ -175,16 +175,20 @@ function MovieOverview(props: IProps) {
                 <p>Status</p>
                 <p>{movieDetail!.status}</p>
               </div>
-              <div>
-                <p>Budget</p>
-                <span> $ </span>
-                <span>{currencyFormatting(movieDetail.budget)}</span>
-              </div>
-              <div>
-                <p>Revenue</p>
-                <span> $ </span>
-                <span>{currencyFormatting(movieDetail!.revenue)}</span>
-              </div>
+              {currencyFormatting(movieDetail.budget) && (
+                <div>
+                  <p>Budget</p>
+                  <span> $ </span>
+                  <span>{currencyFormatting(movieDetail.budget)}</span>
+                </div>
+              )}
+              {currencyFormatting(movieDetail.revenue) && (
+                <div>
+                  <p>Revenue</p>
+                  <span> $ </span>
+                  <span>{currencyFormatting(movieDetail.revenue)}</span>
+                </div>
+              )}
             </StyledMovieStatus>
           </StyledDetailInformations>
         </StyledMovieDetailsContainer>

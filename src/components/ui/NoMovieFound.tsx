@@ -11,4 +11,4 @@ function NoMovieFound() {
   );
 }
 
-export default NoMovieFound;s
+export default NoMovieFound;
