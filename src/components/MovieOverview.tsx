@@ -90,8 +90,8 @@ function MovieOverview(props: IProps) {
           <PopUp className="popup" onCloseModel={hidePopUp}>
             <RiCloseFill onClick={() => hidePopUp()} />
             <Image
-              width={1080}
-              height={1080}
+              width={400}
+              height={700}
               src={IMAGE_API + movieDetail!.poster_path}
               alt="poster path"
             />
@@ -100,9 +100,9 @@ function MovieOverview(props: IProps) {
       )}
       <StyledMovieBanner>
         <Image
-          width={1080}
+          width={500}
           height={608}
-          alt="teste"
+          alt="backdrop image"
           className="backdrop_image"
           src={
             movieDetail!.backdrop_path
@@ -122,9 +122,9 @@ function MovieOverview(props: IProps) {
             onMouseDown={() => setPostHoverEffect(true)}
           >
             <Image
-              width={350}
-              height={500}
-              alt="teste"
+              width={300}
+              height={300}
+              alt="Movie cover"
               src={IMAGE_API + movieDetail!.poster_path}
             />
             <div className="overlay" />
