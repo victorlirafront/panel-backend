@@ -23,9 +23,7 @@ interface ISearchedMovie {
 }
 
 interface IApiResponse {
-  data: {
-    results: ISearchedMovie[];
-  };
+  results: ISearchedMovie[];
 }
 
 function Search() {
@@ -42,10 +40,7 @@ function Search() {
       try {
         const response = await fetch(SEARCH_API + current);
         const data: IApiResponse = await response.json();
-
-        console.log(data)
-        
-        setAllData(data.data.results);
+        setAllData(data.results);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -57,7 +52,9 @@ function Search() {
   }, [searchMovieValue]);
 
   const showMovieDetail = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const route = e.currentTarget.closest('.get-id')!.getAttribute('data-identifier')!;
+    const route = e.currentTarget
+      .closest('.get-id')!
+      .getAttribute('data-identifier')!;
     localStorage.setItem('movie-id', route);
     router.replace('search/' + route);
   };
@@ -77,7 +74,7 @@ function Search() {
         {!isLoading &&
           allData.map((movie: ISearchedMovie) => (
             <MovieItem
-              onClick={(e) => showMovieDetail(e)}
+              onClick={e => showMovieDetail(e)}
               id={movie.id}
               key={movie.id}
               average={getVoteAverage(movie.vote_average)}

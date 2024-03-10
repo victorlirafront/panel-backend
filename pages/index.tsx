@@ -20,7 +20,6 @@ const Home = (props: IHome) => {
       .closest('.get-id')
       ?.getAttribute('data-identifier');
     router.replace('/' + route);
-    console.log(route)
   }
 
   return (
