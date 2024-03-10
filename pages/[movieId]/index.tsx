@@ -1,19 +1,10 @@
-import Axios from "axios";
-import MovieOverview from "../../src/components/MovieOverview";
-import { FEATURED_API } from "../../src/services/api/movieApi";
-import Head from "next/head";
-import React from "react";
-import { useRouter } from "next/router";
-import {
-  GetServerSideProps,
-} from "next";
-
-interface IMovieOriginalResponse {
-  vote_average: string;
-  id: string;
-  poster_path: string;
-  title: string;
-}
+import Axios from 'axios';
+import MovieOverview from '../../src/components/MovieOverview';
+import { FEATURED_API } from '../../src/services/api/movieApi';
+import Head from 'next/head';
+import React from 'react';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 
 interface IMovieDetail {
   id: string;
@@ -40,7 +31,7 @@ function MovieDetails(props: IProps) {
   const router = useRouter();
 
   const backToRoute = function () {
-    router.replace("/");
+    router.replace('/');
   };
 
   return (
@@ -58,20 +49,20 @@ function MovieDetails(props: IProps) {
         trailer={
           movieDetail.videos.results.length > 0
             ? movieDetail.videos.results[0].key
-            : "/GgZpCtBXw"
+            : '/GgZpCtBXw'
         }
       />
     </React.Fragment>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context;
   const { movieId } = params!;
 
   try {
     const response = await Axios.get(
-      `https://api.themoviedb.org/3/movie/${movieId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`
+      `https://api.themoviedb.org/3/movie/${movieId}?api_key=04c35731a5ee918f014970082a0088b1&append_to_response=videos`,
     );
 
     return {
@@ -80,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (error) {
-    console.error("Erro ao obter detalhes do filme:", error);
+    console.error('Erro ao obter detalhes do filme:', error);
 
     return {
       props: {
@@ -90,11 +81,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-export const getServerSidePaths: any = async () => {
-  try {
-    const response = await Axios.get(FEATURED_API);
+interface MovieApiResponse {
+  results: { id: number }[];
+}
 
-    const paths = response.data.results.map((movie: any) => ({
+interface MoviePathParams {
+  movieId: string;
+}
+
+export const getServerSidePaths = async (): Promise<{
+  paths: { params: MoviePathParams }[];
+  fallback: boolean;
+}> => {
+  try {
+    const response = await Axios.get<MovieApiResponse>(FEATURED_API);
+    const paths = response.data.results.map(movie => ({
       params: { movieId: movie.id.toString() },
     }));
 
@@ -103,7 +104,7 @@ export const getServerSidePaths: any = async () => {
       fallback: false,
     };
   } catch (error) {
-    console.error("Erro ao obter dados da API:", error);
+    console.error('Erro ao obter dados da API:', error);
 
     return {
       paths: [],
@@ -111,5 +112,4 @@ export const getServerSidePaths: any = async () => {
     };
   }
 };
-
 export default MovieDetails;
