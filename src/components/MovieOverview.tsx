@@ -8,7 +8,6 @@ import { RiCloseFill } from 'react-icons/ri';
 import PopUp from './ui/PopUp';
 import { BiPlay } from 'react-icons/bi';
 import { CgArrowsExpandRight } from 'react-icons/cg';
-import Image from 'next/image';
 import {
   StyledDetailInformations,
   StyledMovieDetailsContainer,
