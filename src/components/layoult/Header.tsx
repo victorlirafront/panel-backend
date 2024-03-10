@@ -28,7 +28,7 @@ function Header() {
   return (
     <StyledHeader>
       <h1 onClick={goBackToHomePage}>
-        <span>i</span> Movies
+        <span>i</span> Watch it
       </h1>
       <form onSubmit={handleFormSubmit}>
         <StyledInput
